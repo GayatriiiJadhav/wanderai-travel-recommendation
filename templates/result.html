@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>WanderAI – Recommendations</title>
+
+  <link
+    rel="stylesheet"
+    href="{{ url_for('static', filename='style.css') }}"
+  />
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap"
+    rel="stylesheet"
+  />
+</head>
+
+<body class="result-page">
+
+<!-- NAVBAR -->
+
+<nav class="navbar">
+
+  <div class="nav-brand">
+    <span class="brand-icon">✈</span>
+    WanderAI
+  </div>
+
+  <a href="/" class="btn-back">
+    ← New Search
+  </a>
+
+</nav>
+
+<!-- HERO SECTION -->
+
+<section class="result-hero">
+
+  <div class="result-hero-inner">
+
+    <h1>🗺 Your Personalised Destinations</h1>
+
+    <p>
+      Found
+      <strong>{{ recommendations|length }}</strong>
+      matching destinations
+    </p>
+
+    <!-- User Preferences -->
+
+    <div class="pref-pills">
+
+      {% if user_prefs.interests %}
+
+        {% for i in user_prefs.interests.split(',') %}
+
+          <span class="pill interest-pill">
+            🎯 {{ i.strip()|title }}
+          </span>
+
+        {% endfor %}
+
+      {% endif %}
+
+      {% if user_prefs.duration %}
+
+        <span class="pill">
+          ⏱ {{ user_prefs.duration }}
+        </span>
+
+      {% endif %}
+
+      {% if user_prefs.accessibility %}
+
+        <span class="pill">
+          ♿ {{ user_prefs.accessibility }}
+        </span>
+
+      {% endif %}
+
+    </div>
+
+  </div>
+
+</section>
+
+<!-- RESULTS -->
+
+<section class="cards-section">
+
+  {% if recommendations %}
+
+    <div class="cards-grid">
+
+      {% for place in recommendations %}
+
+      <div
+        class="card"
+        style="--delay: {{ loop.index0 * 0.07 }}s"
+      >
+
+        <!-- Match Badge -->
+
+        <div class="match-badge
+          {% if place.similarity >= 70 %}
+            match-high
+          {% elif place.similarity >= 40 %}
+            match-mid
+          {% else %}
+            match-low
+          {% endif %}
+        ">
+
+          {{ place.similarity }}% Match
+
+        </div>
+
+        <!-- Rank -->
+
+        <div class="rank-badge">
+
+          #{{ loop.index }}
+
+        </div>
+
+        <div class="card-body">
+
+          <!-- Place Name -->
+
+          <h2 class="place-name">
+
+            📍 {{ place.place_name }}
+
+          </h2>
+
+          <!-- Rating -->
+
+          <div class="star-row">
+
+            {% set rating = place.tourist_rating | float %}
+
+            {% for i in range(5) %}
+
+              {% if i < rating | int %}
+
+                <span class="star full">★</span>
+
+              {% else %}
+
+                <span class="star empty">☆</span>
+
+              {% endif %}
+
+            {% endfor %}
+
+            <span class="rating-num">
+
+              {{ place.tourist_rating }}
+
+            </span>
+
+          </div>
+
+          <!-- Details -->
+
+          <div class="card-details">
+
+            <div class="detail-row">
+
+              <span class="detail-icon">🎯</span>
+
+              <span class="detail-label">
+                Interests
+              </span>
+
+              <span class="detail-val">
+                {{ place.interests }}
+              </span>
+
+            </div>
+
+            <div class="detail-row">
+
+              <span class="detail-icon">⏱</span>
+
+              <span class="detail-label">
+                Duration
+              </span>
+
+              <span class="detail-val">
+                {{ place.duration }}
+              </span>
+
+            </div>
+
+            <div class="detail-row">
+
+              <span class="detail-icon">♿</span>
+
+              <span class="detail-label">
+                Accessibility
+              </span>
+
+              <span class="detail-val">
+                {{ place.accessibility }}
+              </span>
+
+            </div>
+
+          </div>
+
+          <!-- Similarity Bar -->
+
+          <div class="sim-bar-wrap">
+
+            <div class="sim-bar-label">
+              AI Match Score
+            </div>
+
+            <div class="sim-bar-bg">
+
+              <div
+                class="sim-bar-fill
+                {% if place.similarity >= 70 %}
+                  bar-high
+                {% elif place.similarity >= 40 %}
+                  bar-mid
+                {% else %}
+                  bar-low
+                {% endif %}
+                "
+                style="width: {{ place.similarity }}%"
+              ></div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+      {% endfor %}
+
+    </div>
+
+  {% else %}
+
+    <div class="no-results">
+
+      <div class="no-results-icon">🔍</div>
+
+      <h2>No Matches Found</h2>
+
+      <p>
+        Try changing your preferences.
+      </p>
+
+      <a href="/" class="btn-primary">
+        ← Try Again
+      </a>
+
+    </div>
+
+  {% endif %}
+
+</section>
+
+<!-- FOOTER -->
+
+<footer class="footer">
+
+  <a
+    href="/"
+    class="btn-primary"
+    style="display:inline-block;margin-bottom:1rem;"
+  >
+    ← Search Again
+  </a>
+
+  <p>
+    ✈ WanderAI © 2025 · Powered by AI & Flask
+  </p>
+
+</footer>
+
+<script src="{{ url_for('static', filename='script.js') }}"></script>
+
+</body>
+</html>

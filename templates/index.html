@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>WanderAI – Smart Travel Recommender</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet" />
+  <!-- Lucide icons (CDN) -->
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+</head>
+<body>
+
+<!-- ── NAVBAR ──────────────────────────────────── -->
+<nav class="navbar">
+  <div class="nav-brand">
+    <span class="brand-icon">✈</span> WanderAI
+  </div>
+  <ul class="nav-links">
+    <li><a href="#hero">Home</a></li>
+    <li><a href="#form-section">Find Places</a></li>
+    <li><a href="#how-it-works">How It Works</a></li>
+  </ul>
+</nav>
+
+<!-- ── HERO ────────────────────────────────────── -->
+<section class="hero" id="hero">
+  <div class="hero-overlay"></div>
+  <div class="hero-content">
+    <span class="hero-badge">🤖 AI-Powered Recommendations</span>
+    <h1>Discover Your <span class="gradient-text">Perfect</span> Destination</h1>
+    <p>Tell us your travel style and our ML engine finds the best places — personalised just for you.</p>
+    <a href="#form-section" class="btn-primary">Start Exploring ↓</a>
+  </div>
+  <div class="hero-shapes">
+    <div class="shape s1"></div>
+    <div class="shape s2"></div>
+    <div class="shape s3"></div>
+  </div>
+</section>
+
+<!-- ── HOW IT WORKS ────────────────────────────── -->
+<section class="how-it-works" id="how-it-works">
+  <h2 class="section-title">How It Works</h2>
+  <div class="steps-grid">
+    <div class="step-card">
+      <div class="step-icon">📝</div>
+      <h3>1. Fill Your Preferences</h3>
+      <p>Tell us your interests, budget, travel season and more.</p>
+    </div>
+    <div class="step-card">
+      <div class="step-icon">🧠</div>
+      <h3>2. ML Analyses</h3>
+      <p>TF-IDF + Cosine Similarity finds the most relevant destinations.</p>
+    </div>
+    <div class="step-card">
+      <div class="step-icon">🗺️</div>
+      <h3>3. Get Recommendations</h3>
+      <p>Browse beautiful cards with match scores and details.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ── FORM ─────────────────────────────────────── -->
+<section class="form-section" id="form-section">
+  <div class="form-container glass">
+    <div class="form-header">
+      <h2>✈ Build Your Travel Profile</h2>
+      <p>The more you fill, the better the match!</p>
+    </div>
+
+    <form action="/recommend" method="POST" id="travel-form" novalidate>
+
+      <!-- Row 1 -->
+      <div class="form-grid">
+
+        <!-- Interests (multi-select chips) -->
+        <div class="form-group full-width">
+          <label>🎯 Your Interests <span class="req">*</span></label>
+          <p class="hint">Select all that apply</p>
+          <div class="chip-group" id="interest-chips">
+            <button type="button" class="chip" data-value="adventure">🧗 Adventure</button>
+            <button type="button" class="chip" data-value="beach">🏖 Beach</button>
+            <button type="button" class="chip" data-value="culture">🏛 Culture</button>
+            <button type="button" class="chip" data-value="nature">🌿 Nature</button>
+            <button type="button" class="chip" data-value="wildlife">🦁 Wildlife</button>
+            <button type="button" class="chip" data-value="history">📜 History</button>
+            <button type="button" class="chip" data-value="food">🍜 Food & Cuisine</button>
+            <button type="button" class="chip" data-value="shopping">🛍 Shopping</button>
+            <button type="button" class="chip" data-value="wellness">🧘 Wellness & Spa</button>
+            <button type="button" class="chip" data-value="photography">📸 Photography</button>
+          </div>
+          <!-- Hidden input stores selected values -->
+          <input type="hidden" name="interests" id="interests-input" />
+          <span class="error-msg" id="interests-error">Please select at least one interest.</span>
+        </div>
+
+        <!-- Duration -->
+        <div class="form-group">
+          <label for="duration">⏱ Trip Duration <span class="req">*</span></label>
+          <select name="duration" id="duration" required>
+            <option value="">— Select Duration —</option>
+            <option value="1-3 days">Weekend (1–3 days)</option>
+            <option value="4-7 days">Short Trip (4–7 days)</option>
+            <option value="1-2 weeks">1–2 Weeks</option>
+            <option value="2-4 weeks">2–4 Weeks</option>
+            <option value="1 month+">1 Month+</option>
+          </select>
+          <span class="error-msg" id="duration-error">Please select a duration.</span>
+        </div>
+
+        <!-- Accessibility -->
+        <div class="form-group">
+          <label for="accessibility">♿ Accessibility Needs</label>
+          <select name="accessibility" id="accessibility">
+            <option value="none">No special requirements</option>
+            <option value="wheelchair accessible">Wheelchair Accessible</option>
+            <option value="hearing impaired">Hearing Impaired Friendly</option>
+            <option value="visually impaired">Visually Impaired Friendly</option>
+            <option value="senior friendly">Senior Friendly</option>
+          </select>
+        </div>
+
+        <!-- Budget -->
+        <div class="form-group">
+          <label for="budget">💰 Budget Range <span class="req">*</span></label>
+          <select name="budget" id="budget" required>
+            <option value="">— Select Budget —</option>
+            <option value="budget">Budget (< $500)</option>
+            <option value="mid-range">Mid-Range ($500–$2000)</option>
+            <option value="luxury">Luxury ($2000+)</option>
+          </select>
+          <span class="error-msg" id="budget-error">Please select a budget.</span>
+        </div>
+
+        <!-- Season -->
+        <div class="form-group">
+          <label for="season">🌤 Travel Season <span class="req">*</span></label>
+          <select name="season" id="season" required>
+            <option value="">— Select Season —</option>
+            <option value="spring">🌸 Spring</option>
+            <option value="summer">☀️ Summer</option>
+            <option value="autumn">🍂 Autumn / Fall</option>
+            <option value="winter">❄️ Winter</option>
+            <option value="any">Any Season</option>
+          </select>
+          <span class="error-msg" id="season-error">Please select a season.</span>
+        </div>
+
+        <!-- Group Type -->
+        <div class="form-group">
+          <label for="group_type">👥 Travelling As <span class="req">*</span></label>
+          <select name="group_type" id="group_type" required>
+            <option value="">— Select Group —</option>
+            <option value="solo">🧍 Solo</option>
+            <option value="couple">💑 Couple</option>
+            <option value="family">👨‍👩‍👧 Family</option>
+            <option value="friends">👯 Friends Group</option>
+            <option value="business">💼 Business</option>
+          </select>
+          <span class="error-msg" id="group-error">Please select group type.</span>
+        </div>
+
+      </div><!-- /form-grid -->
+
+      <button type="submit" class="btn-submit" id="submit-btn">
+        <span class="btn-text">🔍 Find My Destinations</span>
+        <span class="btn-loader" style="display:none;">⏳ Analysing…</span>
+      </button>
+
+    </form>
+  </div>
+</section>
+
+<!-- ── FOOTER ───────────────────────────────────── -->
+<footer class="footer">
+  <p>✈ WanderAI &copy; 2025 · Powered by Machine Learning &amp; Flask</p>
+  <p style="font-size:.8rem;opacity:.6;margin-top:.4rem;">TF-IDF · Cosine Similarity · Content-Based Filtering</p>
+</footer>
+
+<script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
